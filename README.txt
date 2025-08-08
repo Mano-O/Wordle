@@ -12,9 +12,13 @@ then the 'evaluate' function is used to print the input of the user but with vis
 the letter is in a correct position it is printed in green and if the letter is in the word but in
 the wrong position it is printed in yellow other wise the letter is grey
 
-I was going to user a color library here to change colors but i found it easier to use the ANSI escape codes within the strings
+I was going to use a color library like colorama and termcolor here to change colors but i found it 
+easier to use the ANSI escape codes within the strings
 
 after we initialized the functions we writing the game logic, we set an attempts counter to 1 and
 increment it each time the user inputs a valid guess, and after 6 inputs if the user didn't get the
 word he loses with each input we check if it is correct and he won or not and if it is valid or not if
 it isn't the user has to re-input before continuing 
+
+i considered adding a leaderboard and making the user input the desired word length and attempts count
+but didn't to stick with the original game
