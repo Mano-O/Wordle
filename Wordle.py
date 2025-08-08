@@ -4,7 +4,7 @@ import random
 def get_list(file):
     with open(file) as f: # we use with to close the file after its done
         lst = [line.strip() for line in f]
-    return lst # return the list
+    return lst, set(lst) # return the list
 
 # get the random word
 def theword(words):
@@ -20,17 +20,17 @@ def evaluate(guess):
 
     for i in range(len(guess)):
         if guess[i] == the_word[i]: # green for correct placement
-            str += '\033[32m' + guess[i]
+            strng += '\033[32m' + guess[i]
         elif guess[i] in the_word: # yellow if its in the word
-            str += '\033[33m' + guess[i]
-        else: str += '\033[0m' + guess[i] # grey if its wrong
+            strng += '\033[33m' + guess[i]
+        else: strng += '\033[0m' + guess[i] # grey if its wrong
 
     return strng + '\033[0m' # add ending color character
 
 
 attempts = 1 # counter for number of attempts
 file = "words.txt"
-words = get_list(file) # getting words list from the file
+words, words_set = get_list(file) # getting words list from the file
 the_word = theword(words)
 
 while (attempts <= 6):
@@ -41,7 +41,7 @@ while (attempts <= 6):
         print("Congrats you won!")
         break
 
-    if not(guess_valid(guess, words)): # if the input is not valid re-input
+    if not(guess_valid(guess, words_set)): # if the input is not valid re-input
         print("Invalid word")
         continue
 
