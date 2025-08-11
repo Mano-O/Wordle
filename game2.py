@@ -13,22 +13,22 @@ def theword(words):
 
 file = "words.txt"
 words, words_set = get_list(file) # getting words list from the file
-word = theword(words)
+word = theword(words) # getting the coorect word
 
 
 pygame.init()
 clock = pygame.time.Clock() # to set the speed of the game to be equal on all monitors
 fps = 60
-color = (255,255,0)
+color = (255,255,0) # color values
 grey = (128, 140, 131)
 green = (99, 201, 62)
 yellow = (242, 242, 48)
 black = (79, 79, 66)
 white = (255,255,255)
-screen = pygame.display.set_mode((500, 570))
-pygame.display.set_caption("Wordle")
-bg = pygame.image.load("bg.png")
-big_font = pygame.font.SysFont("arial", 40)
+screen = pygame.display.set_mode((500, 570)) # setting the screen
+pygame.display.set_caption("Wordle") # caption
+bg = pygame.image.load("bg.png") # keyboard image
+big_font = pygame.font.SysFont("arial", 40) # setting the fonts
 small_font = pygame.font.SysFont("arial", 16)
 board = [["", "", "", "", ""],
         ["", "", "", "", ""],
@@ -49,13 +49,13 @@ delay = 1
 
 
 
-screen.fill(white)
+screen.fill(white) # background color
 
 resized_bg = pygame.transform.scale_by(bg, 0.98)
 
 
 
-def bg_init():
+def bg_init(): # setting the background boxes, and printing the letters
     global turn, game_over
     if game_over == 0:
         screen.fill(white, (0, turn * 57 + 20 , 500, 570))
@@ -73,7 +73,7 @@ def bg_init():
 
 
 
-def delete():
+def delete(): # deleting a letter (backspace)
     global turn, letters_iterator
     letters_iterator -= 1
     board[turn][letters_iterator] = " "
@@ -81,7 +81,7 @@ def delete():
 
 
 
-def check_guess(x):
+def check_guess(x): # checking whether a guess is valid and if it is correct
     global turn, letters_iterator, game_over
 
     for i in range(5):
@@ -97,7 +97,7 @@ def check_guess(x):
 
 
 
-def feedback(guess_list):
+def feedback(guess_list): # coloring the boxes as feedback and a delay
     global turn
     for i in range(5):
             if guess_list[i] == word[i]:
@@ -125,34 +125,37 @@ def feedback(guess_list):
 
 
 
-running = True
+running = True # for the loop
 while running:
+
     clock.tick(fps)
     bg_init()
-    for event in pygame.event.get():
+
+    for event in pygame.event.get(): # to leave if x is pressed
         if event.type == pygame.QUIT:
             running = False
-        if game_over == 0:
-            if event.type == pygame.TEXTINPUT:
-                entry = event.__getattribute__('text')
-                if entry.isalpha() and letters_iterator <= 4:
-                    board[turn][letters_iterator] = entry.lower()
-                    letters_iterator += 1
 
-            if event.type == pygame.KEYDOWN:
+        if game_over == 0: # if the user didn't lose/win
+            if event.type == pygame.TEXTINPUT: # get the input
+                entry = event.__getattribute__('text')
+                if entry.isalpha() and letters_iterator <= 4: # check if it is a letter and make it lowecase
+                    board[turn][letters_iterator] = entry.lower() # put it on the screen
+                    letters_iterator += 1 # go to next space
+
+            if event.type == pygame.KEYDOWN: # delete event
                 if event.key == pygame.K_BACKSPACE and letters_iterator >= 1:
                     delete()
 
-                if event.key == pygame.K_RETURN:
-                    check_guess(turn) # enter key, make a function to check for list
+                if event.key == pygame.K_RETURN: # enter event, to check if the entry is valid/correct
+                    check_guess(turn)
                 
-                if event.key in (pygame.K_SLASH, pygame.K_KP_DIVIDE):
+                if event.key in (pygame.K_SLASH, pygame.K_KP_DIVIDE): #delay toggle event
                     delay = not(delay)
 
-                if turn >= 6:
+                if turn >= 6: # the user loses if he makes too many tries
                     game_over = 1
             
-        if game_over != 0:
+        if game_over != 0: # if he lost print game over
             screen.fill(white, (0, 6.2 * 57 + 20 , 500, 570))
             if game_over == 1:
                 game_over_string = big_font.render("Game Over!", True, black)
@@ -161,12 +164,12 @@ while running:
                 screen.blit(game_over_string, (100, 450))
                 show_word_string = big_font.render(f"The Word Was '{word}'", True, black)
                 screen.blit(show_word_string, (100, 495))
-            else:
+            else: # if he won print congrats
                 game_winning_string = big_font.render("Congrats! You won", True, black)
                 screen.blit(game_winning_string, (110, 430))
                 game_over_string = big_font.render("Press Space To Retry", True, black)
                 screen.blit(game_over_string, (100, 469))
-            if event.type == pygame.KEYDOWN and game_over:
+            if event.type == pygame.KEYDOWN and game_over: # retry if he presses space and reset all parameters
                 if event.key == pygame.K_SPACE:
                     turn = 0
                     letters_iterator = 0
@@ -175,5 +178,5 @@ while running:
                     game_over = False
                 
             
-    pygame.display.flip()
-pygame.QUIT
+    pygame.display.flip() # update the screen
+pygame.QUIT #quit the game
