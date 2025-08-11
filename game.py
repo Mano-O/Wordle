@@ -8,7 +8,6 @@ yellow = (242, 242, 48)
 black = (79, 79, 66)
 screen = pygame.display.set_mode((500, 570))
 pygame.display.set_caption("Test Window")
-print(pygame.font.get_fonts())
 bg = pygame.image.load("bg.png")
 font = pygame.font.SysFont("arial", 40)
 board = [["a", "b", "c", "d", "e"],
@@ -24,6 +23,7 @@ guess_count = 0
 guess_list = [""] * 6
 turn = 0
 letters_iterator = 0
+game_over = False
 
 
 
@@ -34,40 +34,63 @@ def bg_init():
         for j in range(6):
             rect = pygame.Rect(i * 57 + 110, j * 57.5 + 20,50,50)
             pygame.draw.rect(screen, grey, rect, 3)
-            text_entry = font.render(board[j][i], True, black)
-            screen.blit(text_entry, (i * 57 + 123, j * 57.5 + 20))
+    pygame.display.flip()
 
 
 def delete():
-    return
+    global turn, letters_iterator
+    letters_iterator -= 1
+    board[turn][letters_iterator] = " "
+    pygame.display.flip()
 
-def check_guess():
-    return
+def check_guess(x):
+    global turn, letters_iterator
+    for i in range(5):
+        guess_list[x] += board[x][i]
+    if len(guess_list) == 6: #and guess_list in words:
+        print(guess_list)# color it
+        turn += 1
+        letters_iterator = 0
+        for i in range(5):
+            for j in range(6):
+                rect = pygame.Rect(i * 57 + 110, j * 57.5 + 20,50,50)
+                pygame.draw.rect(screen, (255,255,0), rect, 0)
+    else: print("")#screen.blit(text_entry, (i * 57 + 123, j * 57.5 + 20))
 
+
+bg_init()
 running = True
+
 while running:
-    bg_init()
-    
+
+    for i in range(5):
+        for j in range(6):
+            text_entry = font.render(board[j][i], True, black)
+            screen.blit(text_entry, (i * 57 + 123, j * 57.5 + 20))
+
     '''for i in range(0,10):
         for j in range(0,3):
             s = "0123456789"
             print(s[i])'''
-    
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         if event.type == pygame.TEXTINPUT:
             entry = event.__getattribute__('text')
             if entry.isalpha() and letters_iterator <= 4:
                 board[turn][letters_iterator] = entry.lower()
+                bg_init()
                 letters_iterator += 1
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE and letters_iterator >= 1:
-                letters_iterator -= 1
-                board[turn][letters_iterator] = " "
+                delete()
             if event.key == pygame.K_RETURN:
-                print("") # enter key, make a function to check for list
+                check_guess(turn) # enter key, make a function to check for list
+                print(turn)
+            if turn >= 6:
+                game_over = True
                 
             
     pygame.display.flip()
