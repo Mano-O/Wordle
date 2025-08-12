@@ -9,21 +9,24 @@ import urllib.request
         lst = [line.strip() for line in f]
     return lst, set(lst) # return the list'''
 
+url = "https://raw.githubusercontent.com/tabatkins/wordle-list/refs/heads/main/words"
 # get the list of words from the internet to minimise time and not open file each time
 def get_list_api():
     with urllib.request.urlopen(url) as response:
         content = response.read().decode('utf-8')
-    url = "https://raw.githubusercontent.com/tabatkins/wordle-list/refs/heads/main/words"
-    return [word.strip() for i in content.split()]
+    words_list = [word.strip() for word in content.split()]
+    return words_list, set(words_list)
 
-
+word = ''
 # get the random word
 def theword(words):
-    return random.choice(words)
+    global word
+    word = random.choice(words)
+    print(word)
 
 file = "words.txt"
-words, words_set = get_list_api(file) # getting words list from the file
-word = theword(words) # getting the coorect word
+words, words_set = get_list_api() # getting words list from the file
+theword(words)
 
 
 pygame.init()
@@ -109,15 +112,17 @@ def check_guess(x): # checking whether a guess is valid and if it is correct
 
 def feedback(guess_list): # coloring the boxes as feedback and a delay
     global turn
+    check = [""] * 5
     for i in range(5):
             if guess_list[i] == word[i]:
+                check[i] = 1
                 rect = pygame.Rect(i * 57 + 110, turn * 57.5 + 20,50,50)
                 pygame.draw.rect(screen, green, rect, 0)
                 text_entry = big_font.render(board[turn][i], True, white)
                 screen.blit(text_entry, (i * 57 + 123, turn * 57.5 + 20))
                 pygame.display.update()
                 pygame.time.delay(delay * 400)
-            elif guess_list[i] in word:
+            elif guess_list[i] in word and check[i] == 0:
                 rect = pygame.Rect(i * 57 + 110, turn * 57.5 + 20,50,50)
                 pygame.draw.rect(screen, yellow, rect, 0)
                 text_entry = big_font.render(board[turn][i], True, white)
@@ -174,7 +179,7 @@ while running:
                 if event.key in (pygame.K_SLASH, pygame.K_KP_DIVIDE): #delay toggle event
                     delay = not(delay)
 
-                if turn >= 6: # the user loses if he makes too many tries
+                if turn >= 6 and game_over != 2: # the user loses if he makes too many tries
                     game_over = 1
             
         if game_over != 0: # if he lost print game over
@@ -189,6 +194,7 @@ while running:
                     letters_iterator = 0
                     guess_list = [""] * 6
                     board = [[""] * 5 for i in range(6)]
+                    theword(words)
                     game_over = False
                 
             
