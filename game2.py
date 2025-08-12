@@ -123,7 +123,19 @@ def feedback(guess_list): # coloring the boxes as feedback and a delay
                 pygame.time.delay(delay * 400)
 
 
+def losing_screen():
+    game_over_string = big_font.render("Game Over!", True, black)
+    screen.blit(game_over_string, (160, 400))
+    game_over_string = big_font.render("Press Space To Retry", True, black)
+    screen.blit(game_over_string, (100, 450))
+    show_word_string = big_font.render(f"The Word Was '{word}'", True, black)
+    screen.blit(show_word_string, (100, 495))
 
+def winning_screen():
+    game_winning_string = big_font.render("Congrats! You won", True, black)
+    screen.blit(game_winning_string, (110, 430))
+    game_over_string = big_font.render("Press Space To Retry", True, black)
+    screen.blit(game_over_string, (100, 469))
 
 running = True # for the loop
 while running:
@@ -158,23 +170,15 @@ while running:
         if game_over != 0: # if he lost print game over
             screen.fill(white, (0, 6.2 * 57 + 20 , 500, 570))
             if game_over == 1:
-                game_over_string = big_font.render("Game Over!", True, black)
-                screen.blit(game_over_string, (160, 400))
-                game_over_string = big_font.render("Press Space To Retry", True, black)
-                screen.blit(game_over_string, (100, 450))
-                show_word_string = big_font.render(f"The Word Was '{word}'", True, black)
-                screen.blit(show_word_string, (100, 495))
+                losing_screen()
             else: # if he won print congrats
-                game_winning_string = big_font.render("Congrats! You won", True, black)
-                screen.blit(game_winning_string, (110, 430))
-                game_over_string = big_font.render("Press Space To Retry", True, black)
-                screen.blit(game_over_string, (100, 469))
+                winning_screen()
             if event.type == pygame.KEYDOWN and game_over: # retry if he presses space and reset all parameters
                 if event.key == pygame.K_SPACE:
                     turn = 0
                     letters_iterator = 0
                     guess_list = [""] * 6
-                    board = [[""] * 5 for _ in range(6)]
+                    board = [[""] * 5 for i in range(6)]
                     game_over = False
                 
             
