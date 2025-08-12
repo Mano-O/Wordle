@@ -1,7 +1,7 @@
 the code is implemented in functions to make it easier to read.
 
-at first, there is the 'get_list' function which is used to open the words text file and
-save the words into a list for ease of access later on
+at first, there is the 'get_list_api' function which is used to open a github repo with the 5 letter words 
+and save the words into a list for ease of access later on
 
 then the list is used in 'the_word' function to get a random word for the user to guess
 

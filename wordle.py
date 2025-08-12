@@ -1,18 +1,28 @@
 import pygame
 import random
+import urllib.request
+
 
 # get the list of words from the file to minimise time and not open file each time
-def get_list(file):
+'''def get_list(file):
     with open(file) as f: # we use with to close the file after its done
         lst = [line.strip() for line in f]
-    return lst, set(lst) # return the list
+    return lst, set(lst) # return the list'''
+
+# get the list of words from the internet to minimise time and not open file each time
+def get_list_api():
+    with urllib.request.urlopen(url) as response:
+        content = response.read().decode('utf-8')
+    url = "https://raw.githubusercontent.com/tabatkins/wordle-list/refs/heads/main/words"
+    return [word.strip() for i in content.split()]
+
 
 # get the random word
 def theword(words):
     return random.choice(words)
 
 file = "words.txt"
-words, words_set = get_list(file) # getting words list from the file
+words, words_set = get_list_api(file) # getting words list from the file
 word = theword(words) # getting the coorect word
 
 
@@ -169,10 +179,10 @@ while running:
             
         if game_over != 0: # if he lost print game over
             screen.fill(white, (0, 6.2 * 57 + 20 , 500, 570))
-            if game_over == 1:
-                losing_screen()
-            else: # if he won print congrats
+            if game_over == 2:
                 winning_screen()
+            else: # if he won print congrats
+                losing_screen()
             if event.type == pygame.KEYDOWN and game_over: # retry if he presses space and reset all parameters
                 if event.key == pygame.K_SPACE:
                     turn = 0
